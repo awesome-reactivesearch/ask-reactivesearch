@@ -4,6 +4,7 @@ import {
   ReactiveBase,
   ReactiveList,
   SearchBox,
+  AIAnswer,
 } from "@appbaseio/reactivesearch";
 
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -32,7 +33,9 @@ function Main() {
       <Navbar bg="white" className="shadow mb-5" expand="lg">
         <Container>
           <Navbar.Brand>Reactivesearch</Navbar.Brand>
-          <span className={`text-white ${styles.headingTag}`}>KNN Search</span>
+          <span className={`text-white ${styles.headingTag}`}>
+            Ask Reactivesearch
+          </span>
           <a href="">How this is built</a>
         </Container>
       </Navbar>
@@ -98,7 +101,7 @@ function Main() {
                   <div>
                     {item._source.keywords &&
                       item._source.keywords.map((keyword) => (
-                        <Badge key="keyword" className="me-1">
+                        <Badge key={keyword} className="me-1">
                           {keyword}
                         </Badge>
                       ))}
@@ -109,6 +112,24 @@ function Main() {
           ) : null;
         }}
       />
+      <div className="px-5 pt-2">
+        <AIAnswer
+          componentId="ai-answer"
+          placeholder="Ask your question!"
+          showVoiceInput
+          showIcon
+          react={{ and: "search" }}
+          AIConfig={{
+            docTemplate:
+              "title is '${source.title}', page content is '${source.tokens}', URL is https://docs.reactivesearch.io${source.url}",
+            queryTemplate:
+              "Answer the query: '${value}', cite URL in your answer below it similar to a science paper format",
+            topDocsForContext: 2,
+          }}
+          title={<b>AI Chatbox 🤩</b>}
+          enterButton={true}
+        />
+      </div>
 
       <ReactiveList
         componentId="SearchResult"
@@ -135,7 +156,7 @@ function Main() {
                       <div>
                         {item.keywords &&
                           item.keywords.map((keyword) => (
-                            <Badge key="keyword" className="me-1">
+                            <Badge key={keyword} className="me-1">
                               {keyword}
                             </Badge>
                           ))}
