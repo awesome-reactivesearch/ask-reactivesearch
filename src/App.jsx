@@ -47,6 +47,10 @@ function Main() {
             field: "heading",
             weight: 2,
           },
+          {
+            field: "meta_title",
+            weight: 1,
+          },
         ]}
         className="mx-5 mt-2"
         componentId={"search"}
@@ -88,7 +92,9 @@ function Main() {
                   className="listItem"
                 >
                   <div className="fw-bold">{item.value.toUpperCase()}</div>
-                  <div>{`${item._source.meta_title} > ${item._source.heading}`}</div>
+                  <div>{`${item._source.meta_title} ${
+                    item._source.heading ? "> " + item._source.heading : ""
+                  }`}</div>
                   <div>
                     {item._source.keywords &&
                       item._source.keywords.map((keyword) => (
