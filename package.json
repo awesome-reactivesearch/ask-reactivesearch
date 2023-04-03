@@ -9,11 +9,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@appbaseio/reactivesearch": "4.0.0-alpha.2",
+    "@appbaseio/reactivesearch": "^4.0.0-alpha.4",
     "bootstrap": "^5.2.3",
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.2",
     "react-dom": "^18.2.0",
+    "react-markdown": "^8.0.6",
     "sanitize-html": "^2.10.0"
   },
   "devDependencies": {
