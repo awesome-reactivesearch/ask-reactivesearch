@@ -86,7 +86,7 @@ function Main() {
           return isOpen ? (
             <div className={`${styles.suggestions}`}>
               <div>
-                <p className="lead mx-2 mt-3">Sample queries to try:</p>
+                <p className="bg-gray p-2 m-0">Frequently Asked Questions 🤔</p>
                 <div>
                   {faqs.map((item, index) => (
                     <div
