@@ -5,7 +5,6 @@ import {
   ReactiveBase,
   ReactiveList,
   SearchBox,
-  AIAnswer,
 } from "@appbaseio/reactivesearch";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 
@@ -78,6 +77,18 @@ function Main() {
         distinctField="meta_title.keyword"
         highlight={false}
         URLParams
+        enableAI
+        AIUIConfig={{
+          askButton: true,
+        }}
+        AIConfig={{
+          docTemplate:
+            "title is '${source.title}', page content is '${source.tokens}', URL is https://docs.reactivesearch.io${source.url}",
+          queryTemplate:
+            "Answer the query: '${value}', cite URL in your answer below it similar to a science paper format",
+          topDocsForContext: 2,
+        }}
+        autosuggest={true}
         render={({
           downshiftProps: {
             isOpen,
@@ -85,72 +96,55 @@ function Main() {
             highlightedIndex,
             selectedItem,
           },
+          AIData,
         }) =>
-          isOpen ? (
-            <div className={`${styles.suggestions}`}>
-              <div>
-                <p className="bg-gray p-2 m-0">
-                  Frequently Asked Questions{" "}
-                  <span role="img" aria-label="confused">
-                    🤔
-                  </span>
-                </p>
-                <div>
-                  {faqs.map((item, index) => (
-                    <div
-                      /* eslint-disable-next-line react/no-array-index-key */
-                      key={item.id + index}
-                      {...getItemProps({
-                        item,
-                        style: {
-                          backgroundColor:
-                            highlightedIndex === index
-                              ? "var(--bs-primary)"
-                              : "white",
-                          color:
-                            highlightedIndex === index
-                              ? "var(--bs-white)"
-                              : "var(--bs-black)",
-                          fontWeight: selectedItem === item ? "bold" : "normal",
-                          padding: "5px 15px",
-                        },
-                      })}
-                      className="listItem"
-                    >
-                      <span className="clipText">{item.value}</span>
+          isOpen
+            ? console.log({ AIData }) || (
+                <div className={`${styles.suggestions}`}>
+                  {AIData.answer && AIData.question ? (
+                    AIData.answer
+                  ) : (
+                    <div>
+                      <p className="bg-gray p-2 m-0">
+                        Frequently Asked Questions{" "}
+                        <span role="img" aria-label="confused">
+                          🤔
+                        </span>
+                      </p>
+                      <div>
+                        {faqs.map((item, index) => (
+                          <div
+                            /* eslint-disable-next-line react/no-array-index-key */
+                            key={item.id + index}
+                            {...getItemProps({
+                              item,
+                              style: {
+                                backgroundColor:
+                                  highlightedIndex === index
+                                    ? "var(--bs-primary)"
+                                    : "white",
+                                color:
+                                  highlightedIndex === index
+                                    ? "var(--bs-white)"
+                                    : "var(--bs-black)",
+                                fontWeight:
+                                  selectedItem === item ? "bold" : "normal",
+                                padding: "5px 15px",
+                              },
+                            })}
+                            className="listItem"
+                          >
+                            <span className="clipText">{item.value}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  ))}
+                  )}
                 </div>
-              </div>
-            </div>
-          ) : null
+              )
+            : null
         }
       />
-      <div className="px-5 pt-2">
-        <AIAnswer
-          componentId="ai-answer"
-          placeholder="Ask your question!"
-          showVoiceInput
-          showIcon
-          react={{ and: "search" }}
-          AIConfig={{
-            docTemplate:
-              "title is '${source.title}', page content is '${source.tokens}', URL is https://docs.reactivesearch.io${source.url}",
-            queryTemplate:
-              "Answer the query: '${value}', cite URL in your answer below it similar to a science paper format",
-            topDocsForContext: 2,
-          }}
-          title={
-            <b>
-              AI Chatbox{" "}
-              <span role="img" aria-label="happy">
-                🤩
-              </span>
-            </b>
-          }
-          enterButton
-        />
-      </div>
 
       <ReactiveList
         componentId="SearchResult"
