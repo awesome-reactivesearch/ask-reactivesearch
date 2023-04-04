@@ -8,6 +8,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./App.module.css";
 
 import "./App.css";
+import { getIcon } from "./getIcon";
 
 const faqs = [
   {
@@ -151,7 +152,20 @@ function Main() {
                           rel="noreferrer"
                           href={`https://docs.reactivesearch.io${item._source.url}`}
                         >
-                          <div className="clipText">{item.value}</div>
+                          <div className="row">
+                            <div className="col-1">
+                              <div className="p-1 bg-white rounded">
+                                <img
+                                  className="w-100 h-100"
+                                  alt="icon"
+                                  src={getIcon(item._source.keywords)}
+                                />
+                              </div>
+                            </div>
+                            <div className="col-11">
+                              <div className="clipText">{item.value}</div>
+                            </div>
+                          </div>
                         </a>
                       ))}
                     </div>
