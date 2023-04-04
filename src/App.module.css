@@ -28,4 +28,30 @@
   width: 100%;
   border-radius: 0px 0px 10px 10px;
   overflow: hidden;
+  font-size: 0.9rem;
+}
+.suggestionHeading {
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+.suggestion {
+  background-color: white;
+  color: var(--bs-black);
+  font-weight: normal;
+  padding: 5px 15px;
+  width: 100%;
+  height: 100%;
+  display: block;
+  text-decoration: none;
+}
+.activeSuggestion,
+.activeSuggestion:hover {
+  background-color: var(--bs-primary);
+  color: white;
+  font-weight: normal;
+  padding: 5px 15px;
+  width: 100%;
+  height: 100%;
+  display: block;
+  text-decoration: none;
 }

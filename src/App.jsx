@@ -1,12 +1,7 @@
 /* eslint-disable no-template-curly-in-string */
 import React from "react";
-import { Badge, Container, ListGroup, Navbar } from "react-bootstrap";
-import {
-  ReactiveBase,
-  ReactiveList,
-  SearchBox,
-} from "@appbaseio/reactivesearch";
-import { ReactMarkdown } from "react-markdown/lib/react-markdown";
+import { Container, Navbar } from "react-bootstrap";
+import { ReactiveBase, SearchBox } from "@appbaseio/reactivesearch";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -77,127 +72,95 @@ function Main() {
         distinctField="meta_title.keyword"
         highlight={false}
         URLParams
-        enableAI
-        AIUIConfig={{
-          askButton: true,
-        }}
-        AIConfig={{
-          docTemplate:
-            "title is '${source.title}', page content is '${source.tokens}', URL is https://docs.reactivesearch.io${source.url}",
-          queryTemplate:
-            "Answer the query: '${value}', cite URL in your answer below it similar to a science paper format",
-          topDocsForContext: 2,
-        }}
+        // enableAI
+        // AIConfig={{
+        //   docTemplate:
+        //     "title is '${source.title}', page content is '${source.tokens}', URL is https://docs.reactivesearch.io${source.url}",
+        //   queryTemplate:
+        //     "Answer the query: '${value}', cite URL in your answer below it similar to a science paper format",
+        //   topDocsForContext: 2,
+        // }}
         autosuggest={true}
         render={({
-          downshiftProps: {
-            isOpen,
-            getItemProps,
-            highlightedIndex,
-            selectedItem,
-          },
+          downshiftProps: { isOpen, getItemProps, highlightedIndex },
           AIData,
+          data,
         }) =>
-          isOpen
-            ? console.log({ AIData }) || (
-                <div className={`${styles.suggestions}`}>
-                  {AIData.answer && AIData.question ? (
-                    AIData.answer
-                  ) : (
+          isOpen ? (
+            <div className={`${styles.suggestions}`}>
+              {AIData.answer && AIData.question ? (
+                AIData.answer
+              ) : (
+                <div>
+                  {!(data && data.length) ? (
+                    <p
+                      className={`bg-gray p-2 m-0 ${styles.suggestionHeading}`}
+                    >
+                      Frequently Asked Questions{" "}
+                      <span role="img" aria-label="confused">
+                        🤔
+                      </span>
+                    </p>
+                  ) : null}
+                  {!(data && data.length) ? (
                     <div>
-                      <p className="bg-gray p-2 m-0">
-                        Frequently Asked Questions{" "}
-                        <span role="img" aria-label="confused">
-                          🤔
-                        </span>
-                      </p>
-                      <div>
-                        {faqs.map((item, index) => (
-                          <div
-                            /* eslint-disable-next-line react/no-array-index-key */
-                            key={item.id + index}
-                            {...getItemProps({
-                              item,
-                              style: {
-                                backgroundColor:
-                                  highlightedIndex === index
-                                    ? "var(--bs-primary)"
-                                    : "white",
-                                color:
-                                  highlightedIndex === index
-                                    ? "var(--bs-white)"
-                                    : "var(--bs-black)",
-                                fontWeight:
-                                  selectedItem === item ? "bold" : "normal",
-                                padding: "5px 15px",
-                              },
-                            })}
-                            className="listItem"
-                          >
-                            <span className="clipText">{item.value}</span>
-                          </div>
-                        ))}
-                      </div>
+                      {faqs.map((item, index) => (
+                        <div
+                          /* eslint-disable-next-line react/no-array-index-key */
+                          key={item.id + index}
+                          {...getItemProps({
+                            item,
+                          })}
+                          className={
+                            highlightedIndex === index
+                              ? styles.activeSuggestion
+                              : styles.suggestion
+                          }
+                        >
+                          <span className="clipText">{item.value}</span>
+                        </div>
+                      ))}
                     </div>
-                  )}
+                  ) : null}
+                  {data && data.length ? (
+                    <p
+                      className={`bg-gray p-2 m-0 ${styles.suggestionHeading}`}
+                    >
+                      Documentation pages
+                      <span role="img" aria-label="confused">
+                        📄
+                      </span>
+                    </p>
+                  ) : null}
+                  {data && data.length ? (
+                    <div>
+                      {data.map((item, index) => (
+                        <a
+                          /* eslint-disable-next-line react/no-array-index-key */
+                          key={item._id + index}
+                          {...getItemProps({
+                            item,
+                          })}
+                          onClick={null}
+                          className={
+                            highlightedIndex === index
+                              ? styles.activeSuggestion
+                              : styles.suggestion
+                          }
+                          target="_blank"
+                          rel="noreferrer"
+                          href={`https://docs.reactivesearch.io${item._source.url}`}
+                        >
+                          <div className="clipText">{item.value}</div>
+                        </a>
+                      ))}
+                    </div>
+                  ) : null}
                 </div>
-              )
-            : null
-        }
-      />
-
-      <ReactiveList
-        componentId="SearchResult"
-        dataField="title"
-        size={6}
-        className="position-relative"
-        pagination
-        react={{ and: "search" }}
-        renderResultStats={(stats) =>
-          stats ? (
-            <div className="mx-5">
-              {stats.numberOfResults} results found in {stats.time}ms
+              )}
             </div>
           ) : null
         }
-        render={({ data }) => (
-          <div className="mx-5 my-2">
-            <div className="row">
-              <ListGroup className={styles.list} variant="flush">
-                {data.map((item) =>
-                  item.title ? (
-                    <ListGroup.Item key={item._id} className="py-4 px-2">
-                      <h1 className="h3">{item.title || item.meta_title}</h1>
-                      <div>
-                        {item.keywords.map((keyword) => (
-                          <Badge key={keyword} className="me-1">
-                            {keyword}
-                          </Badge>
-                        ))}
-                      </div>
-                      <ReactMarkdown className="my-1">
-                        {item.meta_description}
-                      </ReactMarkdown>
-                      {item.url ? (
-                        <a
-                          href={`https://docs.reactivesearch.io${item.url}`}
-                          className="link-primary"
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          Documentation Page for{" "}
-                          {item.heading
-                            ? `${item.meta_title} > ${item.heading}`
-                            : item.meta_title}
-                        </a>
-                      ) : null}
-                    </ListGroup.Item>
-                  ) : null
-                )}
-              </ListGroup>
-            </div>
-          </div>
-        )}
       />
     </ReactiveBase>
   );
