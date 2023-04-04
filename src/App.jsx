@@ -13,6 +13,21 @@ import styles from "./App.module.css";
 import "./App.css";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 
+const faqs = [
+  {
+    label:
+      "How to use the SearchBox component with MultiList and ReactiveList in React?",
+    value:
+      "How to use the SearchBox component with MultiList and ReactiveList in React?",
+    id: "faq-1",
+  },
+  {
+    label: "Basic usage for MultiList in React",
+    value: "Basic usage for MultiList in React",
+    id: "faq-2",
+  },
+];
+
 function Main() {
   return (
     <ReactiveBase
@@ -60,7 +75,48 @@ function Main() {
         showClear
         distinctField="meta_title.keyword"
         highlight={false}
-        autosuggest={false}
+        render={({
+          downshiftProps: {
+            isOpen,
+            getItemProps,
+            highlightedIndex,
+            selectedItem,
+          },
+        }) => {
+          return isOpen ? (
+            <div className={`${styles.suggestions}`}>
+              <div>
+                <p className="lead mx-2 mt-3">Sample queries to try:</p>
+                <div>
+                  {faqs.map((item, index) => (
+                    <div
+                      /* eslint-disable-next-line react/no-array-index-key */
+                      key={item.id + index}
+                      {...getItemProps({
+                        item,
+                        style: {
+                          backgroundColor:
+                            highlightedIndex === index
+                              ? "var(--bs-primary)"
+                              : "white",
+                          color:
+                            highlightedIndex === index
+                              ? "var(--bs-white)"
+                              : "var(--bs-black)",
+                          fontWeight: selectedItem === item ? "bold" : "normal",
+                          padding: "5px 15px",
+                        },
+                      })}
+                      className="listItem"
+                    >
+                      <span className="clipText">{item.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : null;
+        }}
       />
       <div className="px-5 pt-2">
         {/* <AIAnswer
@@ -100,37 +156,37 @@ function Main() {
             <div className="mx-5 my-2">
               <div className="row">
                 <ListGroup className={styles.list} variant="flush">
-                  {data.map((item) => (
-                    <ListGroup.Item key={item._id} className="py-4 px-2">
-                      <h1 className="h3">{item.title || item.meta_title}</h1>
-                      <div>
-                        {item.keywords &&
-                          item.keywords.map((keyword) => (
-                            <Badge key={keyword} className="me-1">
-                              {keyword}
-                            </Badge>
-                          ))}
-                      </div>
-                      <ReactMarkdown className="my-1">
-                        {item.meta_description}
-                      </ReactMarkdown>
-                      {item.heading ? (
-                        <div className="my-1">
-                          {`${item.meta_title} ${item.heading}`}
+                  {data.map((item) =>
+                    item.title ? (
+                      <ListGroup.Item key={item._id} className="py-4 px-2">
+                        <h1 className="h3">{item.title || item.meta_title}</h1>
+                        <div>
+                          {item.keywords &&
+                            item.keywords.map((keyword) => (
+                              <Badge key={keyword} className="me-1">
+                                {keyword}
+                              </Badge>
+                            ))}
                         </div>
-                      ) : null}
-                      {item.url ? (
-                        <a
-                          href={`https://docs.reactivesearch.io${item.url}`}
-                          className="link-primary"
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          Documentation Page
-                        </a>
-                      ) : null}
-                    </ListGroup.Item>
-                  ))}
+                        <ReactMarkdown className="my-1">
+                          {item.meta_description}
+                        </ReactMarkdown>
+                        {item.url ? (
+                          <a
+                            href={`https://docs.reactivesearch.io${item.url}`}
+                            className="link-primary"
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            Documentation Page for{" "}
+                            {item.heading
+                              ? `${item.meta_title} > ${item.heading}`
+                              : item.meta_title}
+                          </a>
+                        ) : null}
+                      </ListGroup.Item>
+                    ) : null
+                  )}
                 </ListGroup>
               </div>
             </div>
