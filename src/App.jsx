@@ -1,17 +1,19 @@
+/* eslint-disable no-template-curly-in-string */
 import React from "react";
 import { Badge, Container, ListGroup, Navbar } from "react-bootstrap";
 import {
   ReactiveBase,
   ReactiveList,
   SearchBox,
+  AIAnswer,
 } from "@appbaseio/reactivesearch";
+import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import styles from "./App.module.css";
 
 import "./App.css";
-import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 
 const faqs = [
   {
@@ -50,7 +52,7 @@ function Main() {
           <span className={`text-white ${styles.headingTag}`}>
             Ask Reactivesearch
           </span>
-          <a href="">How this is built</a>
+          <a href="/">How this is built</a>
         </Container>
       </Navbar>
 
@@ -71,10 +73,11 @@ function Main() {
         ]}
         className="mx-5 mt-2"
         debounce={500}
-        componentId={"search"}
+        componentId="search"
         showClear
         distinctField="meta_title.keyword"
         highlight={false}
+        URLParams
         render={({
           downshiftProps: {
             isOpen,
@@ -82,11 +85,16 @@ function Main() {
             highlightedIndex,
             selectedItem,
           },
-        }) => {
-          return isOpen ? (
+        }) =>
+          isOpen ? (
             <div className={`${styles.suggestions}`}>
               <div>
-                <p className="bg-gray p-2 m-0">Frequently Asked Questions 🤔</p>
+                <p className="bg-gray p-2 m-0">
+                  Frequently Asked Questions{" "}
+                  <span role="img" aria-label="confused">
+                    🤔
+                  </span>
+                </p>
                 <div>
                   {faqs.map((item, index) => (
                     <div
@@ -115,11 +123,11 @@ function Main() {
                 </div>
               </div>
             </div>
-          ) : null;
-        }}
+          ) : null
+        }
       />
       <div className="px-5 pt-2">
-        {/* <AIAnswer
+        <AIAnswer
           componentId="ai-answer"
           placeholder="Ask your question!"
           showVoiceInput
@@ -132,9 +140,16 @@ function Main() {
               "Answer the query: '${value}', cite URL in your answer below it similar to a science paper format",
             topDocsForContext: 2,
           }}
-          title={<b>AI Chatbox 🤩</b>}
-          enterButton={true}
-        /> */}
+          title={
+            <b>
+              AI Chatbox{" "}
+              <span role="img" aria-label="happy">
+                🤩
+              </span>
+            </b>
+          }
+          enterButton
+        />
       </div>
 
       <ReactiveList
@@ -144,54 +159,51 @@ function Main() {
         className="position-relative"
         pagination
         react={{ and: "search" }}
-        renderResultStats={(stats) => {
-          return stats ? (
+        renderResultStats={(stats) =>
+          stats ? (
             <div className="mx-5">
               {stats.numberOfResults} results found in {stats.time}ms
             </div>
-          ) : null;
-        }}
-        render={({ data }) => {
-          return (
-            <div className="mx-5 my-2">
-              <div className="row">
-                <ListGroup className={styles.list} variant="flush">
-                  {data.map((item) =>
-                    item.title ? (
-                      <ListGroup.Item key={item._id} className="py-4 px-2">
-                        <h1 className="h3">{item.title || item.meta_title}</h1>
-                        <div>
-                          {item.keywords &&
-                            item.keywords.map((keyword) => (
-                              <Badge key={keyword} className="me-1">
-                                {keyword}
-                              </Badge>
-                            ))}
-                        </div>
-                        <ReactMarkdown className="my-1">
-                          {item.meta_description}
-                        </ReactMarkdown>
-                        {item.url ? (
-                          <a
-                            href={`https://docs.reactivesearch.io${item.url}`}
-                            className="link-primary"
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            Documentation Page for{" "}
-                            {item.heading
-                              ? `${item.meta_title} > ${item.heading}`
-                              : item.meta_title}
-                          </a>
-                        ) : null}
-                      </ListGroup.Item>
-                    ) : null
-                  )}
-                </ListGroup>
-              </div>
+          ) : null
+        }
+        render={({ data }) => (
+          <div className="mx-5 my-2">
+            <div className="row">
+              <ListGroup className={styles.list} variant="flush">
+                {data.map((item) =>
+                  item.title ? (
+                    <ListGroup.Item key={item._id} className="py-4 px-2">
+                      <h1 className="h3">{item.title || item.meta_title}</h1>
+                      <div>
+                        {item.keywords.map((keyword) => (
+                          <Badge key={keyword} className="me-1">
+                            {keyword}
+                          </Badge>
+                        ))}
+                      </div>
+                      <ReactMarkdown className="my-1">
+                        {item.meta_description}
+                      </ReactMarkdown>
+                      {item.url ? (
+                        <a
+                          href={`https://docs.reactivesearch.io${item.url}`}
+                          className="link-primary"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          Documentation Page for{" "}
+                          {item.heading
+                            ? `${item.meta_title} > ${item.heading}`
+                            : item.meta_title}
+                        </a>
+                      ) : null}
+                    </ListGroup.Item>
+                  ) : null
+                )}
+              </ListGroup>
             </div>
-          );
-        }}
+          </div>
+        )}
       />
     </ReactiveBase>
   );
