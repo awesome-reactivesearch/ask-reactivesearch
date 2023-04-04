@@ -4,7 +4,6 @@ import {
   ReactiveBase,
   ReactiveList,
   SearchBox,
-  AIAnswer,
 } from "@appbaseio/reactivesearch";
 
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -56,64 +55,15 @@ function Main() {
           },
         ]}
         className="mx-5 mt-2"
+        debounce={500}
         componentId={"search"}
-        URLParams
         showClear
         distinctField="meta_title.keyword"
-        debounce={500}
         highlight={false}
-        render={({
-          data,
-          downshiftProps: {
-            isOpen,
-            getItemProps,
-            highlightedIndex,
-            selectedItem,
-          },
-        }) => {
-          return isOpen ? (
-            <div className={`${styles.suggestions}`}>
-              {data.map((item, index) => (
-                <div
-                  /* eslint-disable-next-line react/no-array-index-key */
-                  key={item._id + index}
-                  {...getItemProps({
-                    item,
-                    style: {
-                      backgroundColor:
-                        highlightedIndex === index
-                          ? "var(--bs-primary)"
-                          : "white",
-                      color:
-                        highlightedIndex === index
-                          ? "var(--bs-white)"
-                          : "var(--bs-black)",
-                      fontWeight: selectedItem === item ? "bold" : "normal",
-                      padding: "5px 15px",
-                    },
-                  })}
-                  className="listItem"
-                >
-                  <div className="fw-bold">{item.value.toUpperCase()}</div>
-                  <div>{`${item._source.meta_title} ${
-                    item._source.heading ? "> " + item._source.heading : ""
-                  }`}</div>
-                  <div>
-                    {item._source.keywords &&
-                      item._source.keywords.map((keyword) => (
-                        <Badge key={keyword} className="me-1">
-                          {keyword}
-                        </Badge>
-                      ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : null;
-        }}
+        autosuggest={false}
       />
       <div className="px-5 pt-2">
-        <AIAnswer
+        {/* <AIAnswer
           componentId="ai-answer"
           placeholder="Ask your question!"
           showVoiceInput
@@ -128,7 +78,7 @@ function Main() {
           }}
           title={<b>AI Chatbox 🤩</b>}
           enterButton={true}
-        />
+        /> */}
       </div>
 
       <ReactiveList
@@ -164,7 +114,21 @@ function Main() {
                       <ReactMarkdown className="my-1">
                         {item.meta_description}
                       </ReactMarkdown>
-                      <div className="my-1">{item.heading}</div>
+                      {item.heading ? (
+                        <div className="my-1">
+                          {`${item.meta_title} ${item.heading}`}
+                        </div>
+                      ) : null}
+                      {item.url ? (
+                        <a
+                          href={`https://docs.reactivesearch.io${item.url}`}
+                          className="link-primary"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          Documentation Page
+                        </a>
+                      ) : null}
                     </ListGroup.Item>
                   ))}
                 </ListGroup>
