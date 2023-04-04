@@ -72,6 +72,7 @@ function Main() {
         showClear
         distinctField="meta_title.keyword"
         highlight={false}
+        size={5}
         URLParams
         // enableAI
         // AIConfig={{
@@ -163,7 +164,19 @@ function Main() {
                               </div>
                             </div>
                             <div className="col-11">
-                              <div className="clipText">{item.value}</div>
+                              <div className="text-uppercase fw-bold">
+                                {item.value}
+                              </div>
+                              <div>
+                                <span className={styles.suggestionBreadcrumb}>
+                                  {item._source.heading
+                                    ? `${item._source.meta_title} > ${item._source.heading}`
+                                    : item._source.meta_title}
+                                </span>
+                              </div>
+                              <div className={styles.suggestionDescription}>
+                                {item._source.meta_description}
+                              </div>
                             </div>
                           </div>
                         </a>

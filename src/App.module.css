@@ -43,6 +43,7 @@
   height: 100%;
   display: block;
   text-decoration: none;
+  position: relative;
 }
 .activeSuggestion,
 .activeSuggestion:hover {
@@ -54,4 +55,28 @@
   height: 100%;
   display: block;
   text-decoration: none;
+  position: relative;
+}
+.suggestionBreadcrumb {
+  padding: 0.25rem;
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  position: absolute;
+  top: 2px;
+  max-width: 30%;
+  right: 10px;
+  background-color: #eee;
+  color: #6c757d;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-radius: var(--bs-border-radius);
+}
+.suggestionDescription {
+  margin-top: 0.25rem;
+  width: 100%;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
 }
