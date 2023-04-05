@@ -1,7 +1,8 @@
 /* eslint-disable no-template-curly-in-string */
 import React from "react";
 import { Container, Navbar } from "react-bootstrap";
-import { ReactiveBase, SearchBox } from "@appbaseio/reactivesearch";
+import { AIAnswer, ReactiveBase, SearchBox } from "@appbaseio/reactivesearch";
+import ReactMarkdown from "react-markdown";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -74,69 +75,57 @@ function Main() {
         highlight={false}
         size={5}
         URLParams
-        // enableAI
-        // AIConfig={{
-        //   docTemplate:
-        //     "title is '${source.title}', page content is '${source.tokens}', URL is https://docs.reactivesearch.io${source.url}",
-        //   queryTemplate:
-        //     "Answer the query: '${value}', cite URL in your answer below it similar to a science paper format",
-        //   topDocsForContext: 2,
-        // }}
         autosuggest={true}
         render={({
           downshiftProps: { isOpen, getItemProps, highlightedIndex },
-          AIData,
           data,
         }) =>
           isOpen ? (
             <div className={`${styles.suggestions}`}>
-              {AIData.answer && AIData.question ? (
-                AIData.answer
-              ) : (
-                <div>
-                  {!(data && data.length) ? (
-                    <p
-                      className={`bg-gray p-2 m-0 ${styles.suggestionHeading}`}
-                    >
-                      Frequently Asked Questions{" "}
-                      <span role="img" aria-label="confused">
-                        🤔
-                      </span>
-                    </p>
-                  ) : null}
-                  {!(data && data.length) ? (
-                    <div>
-                      {faqs.map((item, index) => (
-                        <div
-                          /* eslint-disable-next-line react/no-array-index-key */
-                          key={item.id + index}
-                          {...getItemProps({
-                            item,
-                          })}
-                          className={
-                            highlightedIndex === index
-                              ? styles.activeSuggestion
-                              : styles.suggestion
-                          }
-                        >
-                          <span className="clipText">{item.value}</span>
-                        </div>
-                      ))}
-                    </div>
-                  ) : null}
-                  {data && data.length ? (
-                    <p
-                      className={`bg-gray p-2 m-0 ${styles.suggestionHeading}`}
-                    >
-                      Documentation pages
-                      <span role="img" aria-label="confused">
-                        📄
-                      </span>
-                    </p>
-                  ) : null}
-                  {data && data.length ? (
-                    <div>
-                      {data.map((item, index) => (
+              <div>
+                {!(data && data.length) ? (
+                  <p className={`bg-gray p-2 m-0 ${styles.suggestionHeading}`}>
+                    Frequently Asked Questions{" "}
+                    <span role="img" aria-label="confused">
+                      🤔
+                    </span>
+                  </p>
+                ) : null}
+                {!(data && data.length) ? (
+                  <div>
+                    {faqs.map((item, index) => (
+                      <div
+                        /* eslint-disable-next-line react/no-array-index-key */
+                        key={item.id + index}
+                        {...getItemProps({
+                          item,
+                        })}
+                        className={
+                          highlightedIndex === index
+                            ? styles.activeSuggestion
+                            : styles.suggestion
+                        }
+                      >
+                        <span className="clipText">{item.value}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
+                {data && data.length ? (
+                  <p className={`bg-gray p-2 m-0 ${styles.suggestionHeading}`}>
+                    Documentation pages
+                    <span role="img" aria-label="confused">
+                      📄
+                    </span>
+                  </p>
+                ) : null}
+                {data && data.length ? (
+                  <div>
+                    {data.map((item, index) => {
+                      const breadcrumbText = item._source.heading
+                        ? `${item._source.meta_title} > ${item._source.heading}`
+                        : item._source.meta_title;
+                      return (
                         <a
                           /* eslint-disable-next-line react/no-array-index-key */
                           key={item._id + index}
@@ -170,40 +159,59 @@ function Main() {
                                 title={item.value}
                                 className={styles.suggestionTitle}
                               >
-                                {item.value}
+                                {item.value || item._source.title}
                               </div>
-                              <div>
-                                <span
-                                  title={
-                                    item._source.heading
-                                      ? `${item._source.meta_title} > ${item._source.heading}`
-                                      : item._source.meta_title
+                              {breadcrumbText ? (
+                                <div>
+                                  {
+                                    <span
+                                      title={breadcrumbText}
+                                      className={styles.suggestionBreadcrumb}
+                                    >
+                                      {breadcrumbText}
+                                    </span>
                                   }
-                                  className={styles.suggestionBreadcrumb}
-                                >
-                                  {item._source.heading
-                                    ? `${item._source.meta_title} > ${item._source.heading}`
-                                    : item._source.meta_title}
-                                </span>
-                              </div>
+                                </div>
+                              ) : null}
                               <div
                                 title={item._source.meta_description}
                                 className={styles.suggestionDescription}
                               >
-                                {item._source.meta_description}
+                                <ReactMarkdown>
+                                  {item._source.meta_description}
+                                </ReactMarkdown>
                               </div>
                             </div>
                           </div>
                         </a>
-                      ))}
-                    </div>
-                  ) : null}
-                </div>
-              )}
+                      );
+                    })}
+                  </div>
+                ) : null}
+              </div>
             </div>
           ) : null
         }
       />
+
+      <div className="px-5 pt-2">
+        <AIAnswer
+          componentId="ai-answer"
+          placeholder="Ask your question!"
+          showVoiceInput
+          showIcon
+          react={{ and: "search" }}
+          AIConfig={{
+            docTemplate:
+              "title is '${source.title}', page content is '${source.tokens}', URL is https://docs.reactivesearch.io${source.url}",
+            queryTemplate:
+              "Answer the query: '${value}', cite URL in your answer below it similar to a science paper format",
+            topDocsForContext: 2,
+          }}
+          title={<b>AI Chatbox 🤩</b>}
+          enterButton={true}
+        />
+      </div>
     </ReactiveBase>
   );
 }
