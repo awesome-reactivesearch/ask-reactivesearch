@@ -57,6 +57,14 @@
   text-decoration: none;
   position: relative;
 }
+.suggestionTitle {
+  text-transform: uppercase;
+  font-weight: bold;
+  width: 50%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .suggestionBreadcrumb {
   padding: 0.25rem;
   margin-top: 0.25rem;
@@ -79,4 +87,8 @@
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
+}
+.suggestionIcon {
+  max-width: 100px;
+  margin: auto;
 }

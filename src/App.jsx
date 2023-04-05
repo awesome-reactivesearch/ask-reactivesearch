@@ -154,8 +154,10 @@ function Main() {
                           href={`https://docs.reactivesearch.io${item._source.url}`}
                         >
                           <div className="row">
-                            <div className="col-1">
-                              <div className="p-1 bg-white rounded">
+                            <div className="col-1 d-flex justify-content-center align-items-center">
+                              <div
+                                className={`p-1 bg-white rounded ${styles.suggestionIcon}`}
+                              >
                                 <img
                                   className="w-100 h-100"
                                   alt="icon"
@@ -164,17 +166,30 @@ function Main() {
                               </div>
                             </div>
                             <div className="col-11">
-                              <div className="text-uppercase fw-bold">
+                              <div
+                                title={item.value}
+                                className={styles.suggestionTitle}
+                              >
                                 {item.value}
                               </div>
                               <div>
-                                <span className={styles.suggestionBreadcrumb}>
+                                <span
+                                  title={
+                                    item._source.heading
+                                      ? `${item._source.meta_title} > ${item._source.heading}`
+                                      : item._source.meta_title
+                                  }
+                                  className={styles.suggestionBreadcrumb}
+                                >
                                   {item._source.heading
                                     ? `${item._source.meta_title} > ${item._source.heading}`
                                     : item._source.meta_title}
                                 </span>
                               </div>
-                              <div className={styles.suggestionDescription}>
+                              <div
+                                title={item._source.meta_description}
+                                className={styles.suggestionDescription}
+                              >
                                 {item._source.meta_description}
                               </div>
                             </div>
