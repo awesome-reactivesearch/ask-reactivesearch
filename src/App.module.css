@@ -87,6 +87,22 @@
   -webkit-line-clamp: 2;
   overflow: hidden;
 }
+@media (max-width: 500px) {
+  .suggestionDescription {
+    -webkit-line-clamp: 3;
+  }
+  .suggestionBreadcrumb {
+    position: relative;
+    top: 0;
+    right: 0;
+    font-size: 0.7rem;
+    display: block;
+    max-width: 100%;
+  }
+  .suggestionTitle {
+    width: 100%;
+  }
+}
 .suggestionIcon {
   max-width: 3rem;
   margin: auto;

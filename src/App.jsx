@@ -155,7 +155,7 @@ function Main() {
                           href={`https://docs.reactivesearch.io${item._source.url}`}
                         >
                           <div className="row">
-                            <div className="col-1 d-flex justify-content-center align-items-center">
+                            <div className="d-flex justify-content-center align-items-center col col-3 col-md-1">
                               <div
                                 className={`p-1 bg-white rounded ${styles.suggestionIcon}`}
                               >
@@ -166,7 +166,7 @@ function Main() {
                                 />
                               </div>
                             </div>
-                            <div className="col-11">
+                            <div className="col col-9 col-md-11">
                               <div
                                 title={item.value}
                                 className={styles.suggestionTitle}
