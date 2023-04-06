@@ -1,7 +1,7 @@
 /* eslint-disable no-template-curly-in-string */
 import React from "react";
 import { Container, Navbar } from "react-bootstrap";
-import { ReactiveBase, SearchBox } from "@appbaseio/reactivesearch";
+import { AIAnswer, ReactiveBase, SearchBox } from "@appbaseio/reactivesearch";
 import ReactMarkdown from "react-markdown";
 
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -205,6 +205,24 @@ function Main() {
           ) : null
         }
       />
+      <div className="px-5 pt-2">
+        <AIAnswer
+          componentId="ai-answer"
+          placeholder="Ask your question!"
+          showVoiceInput
+          showIcon
+          react={{ and: "search" }}
+          AIConfig={{
+            docTemplate:
+              "title is '${source.title}', page content is '${source.tokens}', URL is https://docs.reactivesearch.io${source.url}",
+            queryTemplate:
+              "Answer the query: '${value}', cite URL in your answer below it similar to a science paper format",
+            topDocsForContext: 2,
+          }}
+          title={<b>AI Chatbox 🤩</b>}
+          enterButton={true}
+        />
+      </div>
     </ReactiveBase>
   );
 }
