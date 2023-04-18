@@ -219,7 +219,7 @@ function Main() {
               "Answer the query: '${value}', cite URL in your answer below it similar to a science paper format",
             topDocsForContext: 2,
           }}
-          title={<b>AI Chatbox 🤩</b>}
+          title={<b>AI Answer</b>}
           enterButton={true}
         />
       </div>
