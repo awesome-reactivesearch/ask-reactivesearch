@@ -91,38 +91,34 @@ function Main() {
             highlightedIndex,
             selectedItem,
           },
-          AIData: { answer: aiAnswer, loading: aiLoading, showAIScreen },
+          AIData: { answer: aiAnswer, showAIScreen },
           data,
         }) => {
           return isOpen ? (
             <div className={`${styles.suggestions}`}>
               {showAIScreen ? (
-                aiLoading ? (
-                  "Loading..."
-                ) : (
+                <div
+                  style={{
+                    alignSelf: "flex-start",
+                    margin: 8,
+                    maxWidth: "70%",
+                  }}
+                >
                   <div
                     style={{
-                      alignSelf: "flex-start",
-                      margin: 8,
-                      maxWidth: "70%",
+                      display: "inline-block",
+                      maxWidth: "100%",
+                      backgroundColor: "#f1f1f1",
+                      color: "black",
+                      borderRadius: "16px",
+                      padding: "8px 16px",
+                      whiteSpace: "pre-wrap",
+                      wordWrap: "break-word",
                     }}
                   >
-                    <div
-                      style={{
-                        display: "inline-block",
-                        maxWidth: "100%",
-                        backgroundColor: "#f1f1f1",
-                        color: "black",
-                        borderRadius: "16px",
-                        padding: "8px 16px",
-                        whiteSpace: "pre-wrap",
-                        wordWrap: "break-word",
-                      }}
-                    >
-                      {aiAnswer}
-                    </div>
+                    {aiAnswer || "Loading..."}
                   </div>
-                )
+                </div>
               ) : (
                 <div>
                   {!(data && data.length) ? (
