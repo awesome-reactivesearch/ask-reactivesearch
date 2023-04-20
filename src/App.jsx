@@ -1,7 +1,7 @@
 /* eslint-disable no-template-curly-in-string */
 import React from "react";
 import { Container, Navbar } from "react-bootstrap";
-import { AIAnswer, ReactiveBase, SearchBox } from "@appbaseio/reactivesearch";
+import { ReactiveBase, SearchBox } from "@appbaseio/reactivesearch";
 import ReactMarkdown from "react-markdown";
 
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -76,6 +76,14 @@ function Main() {
         size={5}
         URLParams
         autosuggest={true}
+        enableAI
+        AIConfig={{
+          docTemplate:
+            "title is '${source.title}', page content is '${source.tokens}', URL is https://docs.reactivesearch.io${source.url}",
+          queryTemplate:
+            "Answer the query: '${value}', cite URL in your answer below it similar to a science paper format",
+          topDocsForContext: 2,
+        }}
         render={({
           downshiftProps: {
             isOpen,
@@ -83,33 +91,64 @@ function Main() {
             highlightedIndex,
             selectedItem,
           },
+          AIData: { answer: aiAnswer, loading: aiLoading, showAIScreen },
           data,
-        }) =>
-          isOpen ? (
+        }) => {
+          return isOpen ? (
             <div className={`${styles.suggestions}`}>
-              <div>
-                {!(data && data.length) ? (
-                  <p className={`bg-gray p-2 m-0 ${styles.suggestionHeading}`}>
-                    Frequently Asked Questions{" "}
-                    <span role="img" aria-label="confused">
-                      🤔
-                    </span>
-                  </p>
-                ) : null}
-                {!(data && data.length) ? (
-                  <div>
-                    {faqs.map((item, index) => (
-                      <div
-                        /* eslint-disable-next-line react/no-array-index-key */
-                        key={item.id + index}
-                        {...getItemProps({
-                          item,
-                        })}
-                        className={`${
-                          highlightedIndex === index
-                            ? styles.activeSuggestion
-                            : styles.suggestion
-                        } 
+              {showAIScreen ? (
+                aiLoading ? (
+                  "Loading..."
+                ) : (
+                  <div
+                    style={{
+                      alignSelf: "flex-start",
+                      margin: 8,
+                      maxWidth: "70%",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "inline-block",
+                        maxWidth: "100%",
+                        backgroundColor: "#f1f1f1",
+                        color: "black",
+                        borderRadius: "16px",
+                        padding: "8px 16px",
+                        whiteSpace: "pre-wrap",
+                        wordWrap: "break-word",
+                      }}
+                    >
+                      {aiAnswer}
+                    </div>
+                  </div>
+                )
+              ) : (
+                <div>
+                  {!(data && data.length) ? (
+                    <p
+                      className={`bg-gray p-2 m-0 ${styles.suggestionHeading}`}
+                    >
+                      Frequently Asked Questions{" "}
+                      <span role="img" aria-label="confused">
+                        🤔
+                      </span>
+                    </p>
+                  ) : null}
+                  {!(data && data.length) ? (
+                    <div>
+                      {faqs.map((item, index) => (
+                        <div
+                          /* eslint-disable-next-line react/no-array-index-key */
+                          key={item.id + index}
+                          {...getItemProps({
+                            item,
+                          })}
+                          className={`${
+                            highlightedIndex === index
+                              ? styles.activeSuggestion
+                              : styles.suggestion
+                          } 
                                 ${
                                   selectedItem &&
                                   selectedItem.value === item.value
@@ -117,112 +156,97 @@ function Main() {
                                     : ""
                                 }
                                 `}
-                      >
-                        <span className="clipText">{item.value}</span>
-                      </div>
-                    ))}
-                  </div>
-                ) : null}
-                {data && data.length ? (
-                  <p className={`bg-gray p-2 m-0 ${styles.suggestionHeading}`}>
-                    Documentation pages
-                    <span role="img" aria-label="confused">
-                      📄
-                    </span>
-                  </p>
-                ) : null}
-                {data && data.length ? (
-                  <div>
-                    {data.map((item, index) => {
-                      const breadcrumbText = item._source.heading
-                        ? `${item._source.meta_title} > ${item._source.heading}`
-                        : item._source.meta_title;
-                      return (
-                        <a
-                          /* eslint-disable-next-line react/no-array-index-key */
-                          key={item._id + index}
-                          {...getItemProps({
-                            item,
-                          })}
-                          onClick={null}
-                          className={
-                            highlightedIndex === index
-                              ? styles.activeSuggestion
-                              : styles.suggestion
-                          }
-                          target="_blank"
-                          rel="noreferrer"
-                          href={`https://docs.reactivesearch.io${item._source.url}`}
                         >
-                          <div className="row">
-                            <div className="d-flex justify-content-center align-items-center col col-3 col-md-1">
-                              <div
-                                className={`p-1 bg-white rounded ${styles.suggestionIcon}`}
-                              >
-                                <img
-                                  className="w-100 h-100"
-                                  alt="icon"
-                                  src={getIcon(item._source.keywords)}
-                                />
-                              </div>
-                            </div>
-                            <div className="col col-9 col-md-11">
-                              <div
-                                title={item.value}
-                                className={styles.suggestionTitle}
-                              >
-                                {item.value || item._source.title}
-                              </div>
-                              {breadcrumbText ? (
-                                <div>
-                                  {
-                                    <span
-                                      title={breadcrumbText}
-                                      className={styles.suggestionBreadcrumb}
-                                    >
-                                      {breadcrumbText}
-                                    </span>
-                                  }
+                          <span className="clipText">{item.value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : null}
+                  {data && data.length ? (
+                    <p
+                      className={`bg-gray p-2 m-0 ${styles.suggestionHeading}`}
+                    >
+                      Documentation pages
+                      <span role="img" aria-label="confused">
+                        📄
+                      </span>
+                    </p>
+                  ) : null}
+                  {data && data.length ? (
+                    <div>
+                      {data.map((item, index) => {
+                        const breadcrumbText = item._source.heading
+                          ? `${item._source.meta_title} > ${item._source.heading}`
+                          : item._source.meta_title;
+                        return (
+                          <a
+                            /* eslint-disable-next-line react/no-array-index-key */
+                            key={item._id + index}
+                            {...getItemProps({
+                              item,
+                            })}
+                            onClick={null}
+                            className={
+                              highlightedIndex === index
+                                ? styles.activeSuggestion
+                                : styles.suggestion
+                            }
+                            target="_blank"
+                            rel="noreferrer"
+                            href={`https://docs.reactivesearch.io${item._source.url}`}
+                          >
+                            <div className="row">
+                              <div className="d-flex justify-content-center align-items-center col col-3 col-md-1">
+                                <div
+                                  className={`p-1 bg-white rounded ${styles.suggestionIcon}`}
+                                >
+                                  <img
+                                    className="w-100 h-100"
+                                    alt="icon"
+                                    src={getIcon(item._source.keywords)}
+                                  />
                                 </div>
-                              ) : null}
-                              <div
-                                title={item._source.meta_description}
-                                className={styles.suggestionDescription}
-                              >
-                                <ReactMarkdown>
-                                  {item._source.meta_description}
-                                </ReactMarkdown>
+                              </div>
+                              <div className="col col-9 col-md-11">
+                                <div
+                                  title={item.value}
+                                  className={styles.suggestionTitle}
+                                >
+                                  {item.value || item._source.title}
+                                </div>
+                                {breadcrumbText ? (
+                                  <div>
+                                    {
+                                      <span
+                                        title={breadcrumbText}
+                                        className={styles.suggestionBreadcrumb}
+                                      >
+                                        {breadcrumbText}
+                                      </span>
+                                    }
+                                  </div>
+                                ) : null}
+                                <div
+                                  title={item._source.meta_description}
+                                  className={styles.suggestionDescription}
+                                >
+                                  <ReactMarkdown>
+                                    {item._source.meta_description}
+                                  </ReactMarkdown>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        </a>
-                      );
-                    })}
-                  </div>
-                ) : null}
-              </div>
+                          </a>
+                        );
+                      })}
+                    </div>
+                  ) : null}
+                </div>
+              )}
             </div>
-          ) : null
-        }
+          ) : null;
+        }}
       />
-      <div className="px-5 pt-2">
-        <AIAnswer
-          componentId="ai-answer"
-          placeholder="Ask your question!"
-          showVoiceInput
-          showIcon
-          react={{ and: "search" }}
-          AIConfig={{
-            docTemplate:
-              "title is '${source.title}', page content is '${source.tokens}', URL is https://docs.reactivesearch.io${source.url}",
-            queryTemplate:
-              "Answer the query: '${value}', cite URL in your answer below it similar to a science paper format",
-            topDocsForContext: 2,
-          }}
-          title={<b>AI Answer</b>}
-          enterButton={true}
-        />
-      </div>
     </ReactiveBase>
   );
 }
