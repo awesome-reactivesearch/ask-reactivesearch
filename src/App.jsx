@@ -48,7 +48,9 @@ function Main() {
           <span className={`text-white ${styles.headingTag}`}>
             Ask Reactivesearch
           </span>
-          <a href="/">How this is built</a>
+          <a href="https://hashnode.com/draft/642db4a3e4c45a000fbfc5d6">
+            How this is built
+          </a>
         </Container>
       </Navbar>
 
