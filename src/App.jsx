@@ -93,12 +93,12 @@ function Main() {
             highlightedIndex,
             selectedItem,
           },
-          AIData: { answer: aiAnswer, showAIScreen },
+          AIData: { answer: aiAnswer, isAILoading },
           data,
         }) => {
           return isOpen ? (
             <div className={`${styles.suggestions}`}>
-              {showAIScreen ? (
+              {isAILoading ? (
                 <div
                   style={{
                     alignSelf: "flex-start",
