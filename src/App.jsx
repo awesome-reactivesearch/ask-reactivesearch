@@ -172,10 +172,12 @@ function Main() {
                   ) : null}
                   {data && data.length ? (
                     <div>
-                      {data.map((item, index) => {
+                      {data.filter(_ => _._source.title && _._source.meta_title).map((item, index) => {
                         const breadcrumbText = item._source.heading
                           ? `${item._source.meta_title} > ${item._source.heading}`
                           : item._source.meta_title;
+                        const imgSrc = getIcon(item._source.keywords);                      
+
                         return (
                           <a
                             /* eslint-disable-next-line react/no-array-index-key */
@@ -194,17 +196,19 @@ function Main() {
                             href={`https://docs.reactivesearch.io${item._source.url}`}
                           >
                             <div className="row">
-                              <div className="d-flex justify-content-center align-items-center col col-3 col-md-1">
-                                <div
-                                  className={`p-1 bg-white rounded ${styles.suggestionIcon}`}
-                                >
-                                  <img
-                                    className="w-100 h-100"
-                                    alt="icon"
-                                    src={getIcon(item._source.keywords)}
-                                  />
+                              {imgSrc && (
+                                <div className="d-flex justify-content-center align-items-center col col-3 col-md-1">
+                                  <div
+                                    className={`p-1 bg-white rounded ${styles.suggestionIcon}`}
+                                  >
+                                    <img
+                                      className="w-100 h-100"
+                                      alt="icon"
+                                      src={imgSrc}
+                                    />
+                                  </div>
                                 </div>
-                              </div>
+                              )}
                               <div className="col col-9 col-md-11">
                                 <div
                                   title={item.value}

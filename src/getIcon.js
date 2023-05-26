@@ -4,6 +4,7 @@ import flutterIcon from "./flutter.svg";
 import blockIcon from "./block.svg";
 
 export function getIcon(keywords = []) {
+  if (!keywords) return null;
   if (keywords.includes("vue")) {
     return vueIcon;
   } else if (keywords.includes("flutter")) {
