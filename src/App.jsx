@@ -70,8 +70,8 @@ function Main() {
           docTemplate:
             "title is '${source.title}', page content is '${source.tokens}', URL is https://docs.reactivesearch.io${source.url}",
           queryTemplate:
-            "Answer the query: '${value}', cite URL in your answer below it similar to a science paper format",
-          topDocsForContext: 2,
+            "Answer the query: '${value}', cite URL in your answer from the context",
+          topDocsForContext: 3,
         }}
         AIUIConfig={{
           askButton: true,
