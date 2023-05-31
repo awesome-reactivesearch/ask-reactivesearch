@@ -62,7 +62,7 @@ function Main() {
         distinctField="meta_title.keyword"
         showDistinctSuggestions
         size={5}
-        debounce={20}
+        debounce={50}
         highlight={false}
         URLParams
         enableAI
