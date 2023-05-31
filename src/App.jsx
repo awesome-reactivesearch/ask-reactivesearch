@@ -32,7 +32,7 @@ function Main() {
           <span className={`text-white ${styles.headingTag}`}>
             Ask Reactivesearch
           </span>
-          <a href="https://hashnode.com/draft/642db4a3e4c45a000fbfc5d6">
+          <a href="https://blog.reactivesearch.io/question-answering-with-chatgpt-and-elasticsearch">
             How this is built
           </a>
         </Container>
