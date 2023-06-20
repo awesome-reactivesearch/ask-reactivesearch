@@ -136,7 +136,7 @@ function Main() {
                     style={{
                       alignSelf: "flex-start",
                       margin: 8,
-                      maxWidth: "70%",
+                      maxWidth: "100%",
                     }}
                   >
                     <div
