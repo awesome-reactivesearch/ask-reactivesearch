@@ -1,13 +1,16 @@
 .bg-gray {
   background-color: #eee;
 }
+
 @keyframes glowing {
   0% {
     box-shadow: 0 0 5px #47b5ff;
   }
+
   50% {
     box-shadow: 0 0 20px #47b5ff, 0 0 30px #47b5ff;
   }
+
   100% {
     box-shadow: 0 0 5px #47b5ff;
   }
@@ -17,15 +20,19 @@
   0% {
     transform: scale(1.7) rotate(0deg);
   }
+
   50% {
     transform: scale(1.7) rotate(180deg);
   }
+
   51% {
     transform: scale(1.7) rotate(185deg);
   }
+
   52% {
     transform: scale(1.7) rotate(180deg);
   }
+
   80% {
     transform: scale(1.7) rotate(360deg);
   }
@@ -96,4 +103,10 @@ body {
 .ask-ai-button:before {
   border-color: #47b5ff;
   box-shadow: 0 0 5px #47b5ff;
+}
+
+pre {
+  background-color: black;
+  color: white;
+  padding: 10px;
 }

@@ -2,8 +2,16 @@
 import React from "react";
 import { Container, Navbar } from "react-bootstrap";
 import { ReactiveBase, SearchBox } from "@appbaseio/reactivesearch";
-import ReactMarkdown from "react-markdown";
+import { Remarkable } from 'remarkable';
+const md = new Remarkable();
 
+md.set({
+	html: true,
+	breaks: true,
+	xhtmlOut: true,
+	linkify: true,
+	linkTarget: '_blank',
+});
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import styles from "./App.module.css";
@@ -122,9 +130,10 @@ function Main() {
                         whiteSpace: "pre-wrap",
                         wordWrap: "break-word",
                       }}
-                    >
-                      {aiAnswer || "Loading..."}
-                    </div>
+                      dangerouslySetInnerHTML={{
+                        __html: md.render(aiAnswer || "Loading..."),
+                      }}
+                    />                                        
                   </div>
                 </div>
               );
@@ -150,9 +159,10 @@ function Main() {
                         whiteSpace: "pre-wrap",
                         wordWrap: "break-word",
                       }}
-                    >
-                      {aiAnswer || "Loading..."}
-                    </div>
+                      dangerouslySetInnerHTML={{
+                        __html: md.render(aiAnswer || "Loading..."),
+                      }}
+                    />
                   </div>
                 ) : (
                   <div>
@@ -270,11 +280,10 @@ function Main() {
                                     <div
                                       title={item._source.meta_description}
                                       className={styles.suggestionDescription}
-                                    >
-                                      <ReactMarkdown>
-                                        {item._source.meta_description}
-                                      </ReactMarkdown>
-                                    </div>
+                                      dangerouslySetInnerHTML={{
+                                        __html: md.render(item._source.meta_description),
+                                      }}
+                                    />
                                   </div>
                                 </div>
                               </a>
