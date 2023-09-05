@@ -2,22 +2,22 @@
 import React from "react";
 import { Container, Navbar } from "react-bootstrap";
 import { ReactiveBase, SearchBox } from "@appbaseio/reactivesearch";
-import { Remarkable } from 'remarkable';
+import { Remarkable } from "remarkable";
 const md = new Remarkable();
 
 md.set({
-	html: true,
-	breaks: true,
-	xhtmlOut: true,
-	linkify: true,
-	linkTarget: '_blank',
+  html: true,
+  breaks: true,
+  xhtmlOut: true,
+  linkify: true,
+  linkTarget: "_blank",
 });
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import styles from "./App.module.css";
 
 import "./App.css";
-import { ButtonSvg, faqs, getIcon } from "./utils";
+import { ButtonSvg, getIcon } from "./utils";
 
 function Main() {
   return (
@@ -74,6 +74,8 @@ function Main() {
         highlight={false}
         URLParams
         enableAI
+        searchboxId="rs_docs"
+        enableFAQSuggestions
         AIConfig={{
           docTemplate:
             "title is '${source.title}', page content is '${source.tokens}', URL is https://docs.reactivesearch.io${source.url}",
@@ -108,6 +110,11 @@ function Main() {
           loading,
         }) => {
           if (isOpen) {
+            const faqSuggestions =
+              (data && data.filter((s) => s._suggestion_type === "faq")) || [];
+            const indexSuggestions =
+              (data && data.filter((s) => s._suggestion_type === "index")) ||
+              [];
             if (loading || isAILoading) {
               return (
                 <div className={`${styles.suggestions}`}>
@@ -133,7 +140,7 @@ function Main() {
                       dangerouslySetInnerHTML={{
                         __html: md.render(aiAnswer || "Loading..."),
                       }}
-                    />                                        
+                    />
                   </div>
                 </div>
               );
@@ -166,7 +173,7 @@ function Main() {
                   </div>
                 ) : (
                   <div>
-                    {!(data && data.length) ? (
+                    {faqSuggestions && faqSuggestions.length ? (
                       <p
                         className={`bg-gray p-2 m-0 ${styles.suggestionHeading}`}
                       >
@@ -176,12 +183,12 @@ function Main() {
                         </span>
                       </p>
                     ) : null}
-                    {!(data && data.length) ? (
+                    {faqSuggestions && faqSuggestions.length ? (
                       <div>
-                        {faqs.map((item, index) => (
+                        {faqSuggestions.map((item, index) => (
                           <div
                             /* eslint-disable-next-line react/no-array-index-key */
-                            key={item.id + index}
+                            key={item._id}
                             {...getItemProps({
                               item,
                             })}
@@ -203,7 +210,7 @@ function Main() {
                         ))}
                       </div>
                     ) : null}
-                    {data && data.length ? (
+                    {indexSuggestions && indexSuggestions.length ? (
                       <p
                         className={`bg-gray p-2 m-0 ${styles.suggestionHeading}`}
                       >
@@ -213,9 +220,9 @@ function Main() {
                         </span>
                       </p>
                     ) : null}
-                    {data && data.length ? (
+                    {indexSuggestions && indexSuggestions.length ? (
                       <div>
-                        {data
+                        {indexSuggestions
                           .filter(
                             (_) => _._source.title && _._source.meta_title
                           )
@@ -228,13 +235,14 @@ function Main() {
                             return (
                               <a
                                 /* eslint-disable-next-line react/no-array-index-key */
-                                key={item._id + index}
+                                key={item._id}
                                 {...getItemProps({
                                   item,
                                 })}
                                 onClick={null}
                                 className={
-                                  highlightedIndex === index
+                                  highlightedIndex ===
+                                  index + faqSuggestions.length
                                     ? styles.activeSuggestion
                                     : styles.suggestion
                                 }
@@ -281,7 +289,9 @@ function Main() {
                                       title={item._source.meta_description}
                                       className={styles.suggestionDescription}
                                       dangerouslySetInnerHTML={{
-                                        __html: md.render(item._source.meta_description),
+                                        __html: md.render(
+                                          item._source.meta_description
+                                        ),
                                       }}
                                     />
                                   </div>
