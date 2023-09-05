@@ -74,7 +74,7 @@ function Main() {
         highlight={false}
         URLParams
         enableAI
-        searchboxId="rs_docs"
+        searchboxId="ask_reactivesearch"
         enableFAQSuggestions
         AIConfig={{
           docTemplate:
@@ -115,6 +115,7 @@ function Main() {
             const indexSuggestions =
               (data && data.filter((s) => s._suggestion_type === "index")) ||
               [];
+
             if (loading || isAILoading) {
               return (
                 <div className={`${styles.suggestions}`}>
